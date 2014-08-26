@@ -1,0 +1,23 @@
+{
+  "name": "AsqRest",
+  "version": "0.1.0",
+  "description": "AsqRest",
+  "main": "AsqRest",
+  "dependencies": {
+	    "express":"*",
+	    "express-resource":"*",	    
+	    "util":"*",
+	    "node-uuid":"*",
+	    "http-status":"*",	    
+	    "xml2json":"*"	    
+	  },
+  "scripts": {
+    "test": "echo \"Error: no test specified! Configure in package.json\" && exit 1"
+  },
+  "repository": "",
+  "keywords": [
+  ],
+  "author": "Marek Sirkovský",
+  "license": "MIT",
+  "readmeFilename": "README.md"
+}

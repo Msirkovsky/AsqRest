@@ -9,19 +9,23 @@
 <body>
 <script>
 
-ASQ(21)
-.then(function(done,msg){
-    setTimeout(function(){
-        done(msg * 2);
-    },10);
-})
-.then(function(done,msg){
-    done("Meaning of life: " + msg);
-})
-.then(function(done,msg){
-   alert(msg); // "Meaning of life: 42"
-});
+//ajaxRequest()
+    //.then(function(), znovuProvedRequest);
 
+/*   $.ajax("api/blog")
+        .then(function(data) {
+            alert("test GET - ok");
+        }
+        ,function(err) {
+        	doo();
+            alert("test GET - error");
+        });*/
+ASQ(function step1(done){
+    done( "Hello", "World" );
+})
+.then(function step2(done,msg1,msg2){
+    console.log(msg1,msg2); // "Hello"  "World"
+});
 
 </script>
 </body>

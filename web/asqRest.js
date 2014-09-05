@@ -24,8 +24,7 @@ function AsqlRestClient(url) {
     {
 
 
-    }
-
+    }  
 
     function post(data) {
         
@@ -38,8 +37,32 @@ function AsqlRestClient(url) {
     })
     }
 
+
+function get(query,id) {
+        
+       return $.ajax(
+    {
+        type: "GET",
+        url: _url,
+        contentType: "application/json",
+        data:  id
+    });
+
+}
+ function get(id) {
+        
+       return $.ajax(
+    {
+        type: "GET",
+        url: _url,
+        contentType: "application/json",
+        data:  id
+    });
+    }
+
     return {
-        post : post
+        post : post,
+        get : get
     };
 
 }

@@ -1,4 +1,15 @@
 ﻿function main() {
+
+    var builder = {
+        data: [
+        {comment : { name : 'comment', url: 'api/comment'}},
+        {blog : { name : 'blog', url: 'api/blog', association : "comment", associationKey:"idBlog"}}
+        ]
+    };
+
+    var autoLoader = new AsqlRestClientAutoLoader(builder);
+    var completeEntity = autoLoader.load(1,'blog');
+
     var div = document.getElementById("viewDiv");
     div.innerHTML = "test";
 
@@ -22,8 +33,26 @@
         addResultBold("AsqlRestClient - test GET  - error");
     });
 
+    promise = client.get({"id": "1"});
+    promise.done(function (data) {
+        addResultBold("AsqlRestClient - test GET  - ok");
+    }).fail(function () {
+        addResultBold("AsqlRestClient - test GET  - error");
+    });
 
-    $.ajax("api/blog")
+    var client = new AsqlRestClient('api/comment');
+    var promise = client.post({"data":"test"});
+    promise.done(function (data) {
+        addResultBold("AsqlRestClient - test GET  - ok");
+    }).fail(function () {
+        addResultBold("AsqlRestClient - test GET  - error");
+    });
+}
+
+function oldRequests()
+{
+
+     $.ajax("api/blog")
         .done(function(data) {
             addResult("test GET - ok");
         })
@@ -31,7 +60,6 @@
             addResult("test GET - error");
         });
     
-
     $.ajax(
         {
             type: "POST",
@@ -46,7 +74,7 @@
             addResult("test POST error");
         });
 
-    
+
 
     $.ajax(
         {
@@ -79,4 +107,3 @@
         });
 
 }
-

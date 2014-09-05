@@ -6,6 +6,17 @@ var app = express();
 app.use(express.static(__dirname + '/web'));
 
 
+function filterArray (arr, criteria) {
+        return arr.filter(function(obj) {
+          return Object.keys(criteria).every(function(c) {
+            if (obj[c] == undefined || criteria[c] == '' || criteria[c] == null)
+              return true;
+
+            return obj[c].toString().indexOf(criteria[c].toString()) != -1;
+          });
+        });
+      }
+
 	function getMockBlogPosts()
 	{
 	    return [
@@ -16,22 +27,43 @@ app.use(express.static(__dirname + '/web'));
 	    ];
 	}
 
+	function getMockCommentPosts()
+	{
+	    return [
+	    { id: "1", idBlog : "1", text: "Komentář 1"},
+	    { id: "2", idBlog : "1", text: "Komentář 2"},
+	    { id: "3", idBlog : "1", text: "Komentář 3"},
+	    { id: "4", idBlog : "1", text: "Komentář 4"},
+
+	    { id: "5", idBlog : "2", text: "Komentář k jinému blogu"},
+	    { id: "6", idBlog : "2", text: "Komentář k jinému blogu"}
+	    ];
+	}
+
 	app.get('/api/blog', function (req, res) {
 		console.log(req.query);
 
-		var data = {}
-		data.blogs = getMockBlogPosts();
-		
-	    //data.tasks = filterArray(data.blogs, req.query)
-		//data.totalItems = data.blogs.length;
-		//data.blogs = sortResults(data.blogs, req.query.sortedBy, req.query.sortDir == 'asc');
-		//var start = (req.query.pageNumber-1)*5;
-		//var end = start+5;
-		//data.blogs = data.tasks.slice(start, end);
-
-	    res.send(data.blogs);
+		var blogs = getMockCommentPosts();
+		blogs = filterArray(blogs, req.query)
+	    res.send(blogs);
 	});
 	
+	app.get('/api/comment:idBlog', function (req, res) {
+		console.log(req.query);
+
+		var data = {}
+		data.blogs = getMockCommentPosts();
+	    res.send(data.blogs);
+	});
+
+	app.get('/api/comment', function (req, res) {
+		console.log(req.query);
+
+		var data = {}
+		data.blogs = getMockCommentPosts();
+	    res.send(data.blogs);
+	});
+
 	app.get('/api/blog:id', function(req, res) {
 	    var test = getMockBlogPosts()[0];	  
 	  res.json(test);
@@ -53,6 +85,9 @@ app.use(express.static(__dirname + '/web'));
 	  console.log("delete: " + util.inspect(req.body));
 	  res.json(true);
 	});
+
+	
+
 
 console.log('localhost:1337/');
 app.listen(1337);

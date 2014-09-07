@@ -37,32 +37,42 @@ function AsqlRestClient(url) {
     })
     }
 
+ function getByForeignKey(key, idKey) {
 
-function get(query,id) {
-        
+        var url = _url + "?"+key+"="+idKey;
        return $.ajax(
     {
         type: "GET",
-        url: _url,
-        contentType: "application/json",
-        data:  id
+        url: url,
+        contentType: "application/json"        
     });
+    }
+// function get(query,id) {
+        
+//        return $.ajax(
+//     {
+//         type: "GET",
+//         url: _url,
+//         contentType: "application/json",
+//         data:  id
+//     });
 
-}
+// }
  function get(id) {
         
-       return $.ajax(
+    var url = _url + "?id="+id;
+    return $.ajax(
     {
         type: "GET",
-        url: _url,
-        contentType: "application/json",
-        data:  id
+        url: url,
+        contentType: "application/json"        
     });
     }
 
     return {
         post : post,
-        get : get
+        get : get,
+        getByForeignKey:getByForeignKey
     };
 
 }

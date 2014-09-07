@@ -33,26 +33,26 @@ function filterArray (arr, criteria) {
 	    { id: "1", idBlog : "1", text: "Komentář 1"},
 	    { id: "2", idBlog : "1", text: "Komentář 2"},
 	    { id: "3", idBlog : "1", text: "Komentář 3"},
-	    { id: "4", idBlog : "1", text: "Komentář 4"},
-
-	    { id: "5", idBlog : "2", text: "Komentář k jinému blogu"},
-	    { id: "6", idBlog : "2", text: "Komentář k jinému blogu"}
+	    { id: "4", idBlog : "1", text: "Komentář 4"}
+	    //{ id: "5", idBlog : "2", text: "Komentář k jinému blogu"},
+	    //{ id: "6", idBlog : "2", text: "Komentář k jinému blogu"}
 	    ];
 	}
 
 	app.get('/api/blog', function (req, res) {
 		console.log(req.query);
 
-		var blogs = getMockCommentPosts();
+		var blogs = getMockBlogPosts();
 		blogs = filterArray(blogs, req.query)
 	    res.send(blogs);
 	});
 	
-	app.get('/api/comment:idBlog', function (req, res) {
+	app.get('/api/comment:id', function (req, res) {
 		console.log(req.query);
 
 		var data = {}
 		data.blogs = getMockCommentPosts();
+		filterArray(data.blogs, ""
 	    res.send(data.blogs);
 	});
 
@@ -65,7 +65,7 @@ function filterArray (arr, criteria) {
 	});
 
 	app.get('/api/blog:id', function(req, res) {
-	    var test = getMockBlogPosts()[0];	  
+	    var test = getMockBlogPosts()[0];	  	    
 	  res.json(test);
 	});
 	

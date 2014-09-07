@@ -7,23 +7,27 @@
         ]
     };
 
-    var autoLoader = new AsqlRestClientAutoLoader(builder);
-    var completeEntity = autoLoader.load(1,'blog');
-
     var div = document.getElementById("viewDiv");
     div.innerHTML = "test";
-
-    div.innerHTML = div.innerHTML + "<br/>test GET";
+    
+    function addResultBold(text)
+    {
+       div.innerHTML = div.innerHTML + "<br/><b>" + text + '</b>';
+    }
 
     function addResult(text)
     {
        div.innerHTML = div.innerHTML + "<br/>" + text;
     }
 
-        function addResultBold(text)
-    {
-       div.innerHTML = div.innerHTML + "<br/><b>" + text + '</b>';
-    }
+    var autoLoader = new AsqlRestClientAutoLoader(builder);
+    autoLoader.setLogger(addResult);
+    var completeEntity = autoLoader.load(1,'blog');
+
+
+    div.innerHTML = div.innerHTML + "<br/>test GET";
+
+
 
     var client = new AsqlRestClient('api/blog');
     var promise = client.post({"data":"test"});
@@ -40,8 +44,9 @@
         addResultBold("AsqlRestClient - test GET  - error");
     });
 
-    var client = new AsqlRestClient('api/comment');
+    var client = new AsqlRestClient('api/comment?');
     var promise = client.post({"data":"test"});
+
     promise.done(function (data) {
         addResultBold("AsqlRestClient - test GET  - ok");
     }).fail(function () {

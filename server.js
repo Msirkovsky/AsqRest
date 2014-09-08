@@ -52,7 +52,7 @@ function filterArray (arr, criteria) {
 
 		var data = {}
 		data.blogs = getMockCommentPosts();
-		filterArray(data.blogs, ""
+		//filterArray(data.blogs, ""
 	    res.send(data.blogs);
 	});
 

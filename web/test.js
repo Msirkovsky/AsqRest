@@ -3,9 +3,12 @@
     var builder = {
         data: [
         {comment : { name : 'comment', url: 'api/comment'}},
-        {blog : { name : 'blog', url: 'api/blog', association : "comment", associationKey:"idBlog"}}
+        {blog : { name : 'blog', url: 'api/blog', relations : [{ name: "comment", key:"idBlog", type: 'a'}]}}
         ]
     };
+alert('Pokračovat');
+
+
 
     var div = document.getElementById("viewDiv");
     div.innerHTML = "test";
@@ -44,14 +47,14 @@
         addResultBold("AsqlRestClient - test GET  - error");
     });
 
-    var client = new AsqlRestClient('api/comment?');
-    var promise = client.post({"data":"test"});
+    //var client = new AsqlRestClient('api/comment');
+    //var promise = client.post({"data":"test"});
 
-    promise.done(function (data) {
-        addResultBold("AsqlRestClient - test GET  - ok");
-    }).fail(function () {
-        addResultBold("AsqlRestClient - test GET  - error");
-    });
+    //promise.done(function (data) {
+    //    addResultBold("AsqlRestClient - test GET  - ok");
+    //}).fail(function () {
+    //    addResultBold("AsqlRestClient - test GET  - error");
+    //});
 }
 
 function oldRequests()

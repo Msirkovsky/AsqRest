@@ -12,33 +12,43 @@ function AsqlRestClientAutoLoader(builder) {
     function load(id, nameOfRoot)
     {
         var root = getByName(nameOfRoot);
-        var associationString = root["association"];
-      
-        //načtu root a jeho associationString
-        var association = getByName(associationString);
-
         var rootClient = new AsqlRestClient(root.url);
-        var associationClient = new AsqlRestClient(association.url);
+        
 
         log("I am getting root: " + nameOfRoot);
         var promiseMain = rootClient.get(id).then(function(data)
         {
+            log("I am done getting root: " + nameOfRoot);
             _resultObject = data[0];
         }
-        )
+        );
 
-        log("I am getting association: " + associationString + ". Foreignt key: " + root.associationKey);
+        
+        var relations = root["relations"];
+        
+        for (var index = 0; index < relations.length; index++) {        
+            processRelations(relations[index], id, promiseMain);      
+        }
+        return _resultObject;
+    }
+
+    function processRelations(relation, id, promiseMain)
+    {    
+        var association = getByName(relation.name);
+        var associationClient = new AsqlRestClient(association.url);
+
+        log("I am getting association: " + relation.name + ". Foreignt key: " + relation.key);
 
         $.when(promiseMain).then(function(data)
         {
-            associationClient.getByForeignKey(root.associationKey, id).then(function(data)
+            associationClient.getByForeignKey(relation.key, id).then(function(data)
             {
-                _resultObject[associationString] = data;
+                log("I am done getting association: " + relation.name);
+                _resultObject[relation.name] = data;
             }
         )}
         );
 
-        return _resultObject;
     }
 
     function log(message)
@@ -55,10 +65,8 @@ function AsqlRestClientAutoLoader(builder) {
                 return arrayItem[name];
         }
     }
-
       return {
         load : load,
         setLogger : setLogger     
     };
-
 }

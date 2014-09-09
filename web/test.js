@@ -2,13 +2,11 @@
 
     var builder = {
         data: [
-        {comment : { name : 'comment', url: 'api/comment'}},
-        {blog : { name : 'blog', url: 'api/blog', relations : [{ name: "comment", key:"idBlog", type: 'a'}]}}
+        {author : { name : 'author', url: 'api/author' }},
+        {comment : { name : 'comment', url: 'api/comment', relations : [{ name : "author", type:"author", key:"idComment", relation: 'a'}] }},
+        {blog : { name : 'blog', url: 'api/blog', relations : [{ name: "comments", type:"comment", key:"idBlog", relation: 'c'}]}}
         ]
     };
-alert('Pokračovat');
-
-
 
     var div = document.getElementById("viewDiv");
     div.innerHTML = "test";
@@ -30,8 +28,6 @@ alert('Pokračovat');
 
     div.innerHTML = div.innerHTML + "<br/>test GET";
 
-
-
     var client = new AsqlRestClient('api/blog');
     var promise = client.post({"data":"test"});
     promise.done(function (data) {
@@ -47,14 +43,6 @@ alert('Pokračovat');
         addResultBold("AsqlRestClient - test GET  - error");
     });
 
-    //var client = new AsqlRestClient('api/comment');
-    //var promise = client.post({"data":"test"});
-
-    //promise.done(function (data) {
-    //    addResultBold("AsqlRestClient - test GET  - ok");
-    //}).fail(function () {
-    //    addResultBold("AsqlRestClient - test GET  - error");
-    //});
 }
 
 function oldRequests()

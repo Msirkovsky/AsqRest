@@ -17,6 +17,15 @@ function filterArray (arr, criteria) {
         });
       }
 
+
+	function getMockAuthor()
+	{
+    return [
+	    { id: "1", name: "Tom", idComment:"1" },
+	    { id: "2", name: "Jeremy", idComment:"1" }
+	    ];
+	}
+
 	function getMockBlogPosts()
 	{
 	    return [
@@ -38,15 +47,32 @@ function filterArray (arr, criteria) {
 	    //{ id: "6", idBlog : "2", text: "Komentář k jinému blogu"}
 	    ];
 	}
+/*
+	app.get('/api/author:idComment', function (req, res) {
+		console.log(req.query);
 
+		var data = {}
+
+		data.blogs = getMockAuthor();		
+	    res.send(data.blogs);
+	});
+*/
 	app.get('/api/blog', function (req, res) {
 		console.log(req.query);
 
 		var blogs = getMockBlogPosts();
 		blogs = filterArray(blogs, req.query)
 	    res.send(blogs);
-	});
-	
+	});	
+
+		app.get('/api/author', function (req, res) {
+		console.log(req.query);
+
+		var blogs = getMockAuthor();
+		blogs = filterArray(blogs, req.query)
+	    res.send(blogs);
+	});	
+
 	app.get('/api/comment:id', function (req, res) {
 		console.log(req.query);
 

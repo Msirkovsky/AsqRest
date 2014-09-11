@@ -39,10 +39,10 @@ function filterArray (arr, criteria) {
 	function getMockCommentPosts()
 	{
 	    return [
-	    { id: "1", idBlog : "1", text: "Komentář 1"},
-	    { id: "2", idBlog : "1", text: "Komentář 2"},
-	    { id: "3", idBlog : "1", text: "Komentář 3"},
-	    { id: "4", idBlog : "1", text: "Komentář 4"}
+	    { id: "1", idBlog : "1", text: "Komentář 1"}
+	    //{ id: "2", idBlog : "1", text: "Komentář 2"},
+	    //{ id: "3", idBlog : "1", text: "Komentář 3"},
+	    //{ id: "4", idBlog : "1", text: "Komentář 4"}
 	    //{ id: "5", idBlog : "2", text: "Komentář k jinému blogu"},
 	    //{ id: "6", idBlog : "2", text: "Komentář k jinému blogu"}
 	    ];

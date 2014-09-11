@@ -3,19 +3,20 @@ function AsqlRestClientAutoLoader(builder) {
     var _builder = builder;
     var _logListener= null;
     var _resultObject = null;
-    
+    var _callbackAfterAllLoaded;
     function setLogger(logListener) 
     {
         _logListener = logListener;
     }
 
-    function load(id, nameOfRoot)
+    function load(id, nameOfRoot, callbackAfterAllLoaded)
     {
+        _callbackAfterAllLoaded = callbackAfterAllLoaded;
         var root = getRelationConfigurationByName(nameOfRoot);
         var rootClient = new AsqlRestClient(root.url);
         
-
         log("I am getting root: " + nameOfRoot);
+        pocetAsyncRequestCelkovychStat++;
         var promiseMain = rootClient.get(id).then(function(data)
         {
             log("I am done getting root: " + nameOfRoot);
@@ -31,6 +32,9 @@ function AsqlRestClientAutoLoader(builder) {
         return _resultObject;
     }
 
+    var pocetAktivnichAsyncRequest = 0;
+    var pocetAsyncRequestCelkovychStat = 0;
+
     function processRelations(relation, id, promiseParent)
     {
         var association = getRelationConfigurationByName(relation.type);
@@ -40,9 +44,14 @@ function AsqlRestClientAutoLoader(builder) {
 
         $.when(promiseParent).then(function(data)
         {
+            pocetAktivnichAsyncRequest++;
+            pocetAsyncRequestCelkovychStat++;
+
             associationClient.getByForeignKey(relation.key, id).then(function(data)
             {
-                log("I am done getting association: " + relation.name);                
+                log("I am done getting relation: " + relation.name);
+                pocetAktivnichAsyncRequest--;
+
                 _resultObject[relation.name] = data;
                 if (Array.isArray(data))
                 {
@@ -51,7 +60,14 @@ function AsqlRestClientAutoLoader(builder) {
                 else
                 {
                     processSingleItem(data, relation);
-                }                
+                }
+
+                if (pocetAktivnichAsyncRequest == 0)
+                {
+                    log("Počet celkových requestů " + pocetAsyncRequestCelkovychStat);
+                    log("All completed");
+                    _callbackAfterAllLoaded(_resultObject);
+                }
             }
         )}
         );
@@ -60,9 +76,16 @@ function AsqlRestClientAutoLoader(builder) {
     function processArray(data, type)  {
         var relationInstance = getRelationConfigurationByName(type);
 
+        if (relationInstance == null)
+        {
+            throw "Not mapped: " + type +". Cant process!";
+        }
+
         for (var index = 0; index < data.length; index++) {
             
-            var relations = getRelationConfigurationByName(type).relations;
+            var relations = relationInstance.relations;
+            if (relations == undefined)
+                return;
             
              for (var j = 0; j < relations.length; j++) {        
                 processRelations(relations[j], data[index].id, null);
@@ -71,7 +94,9 @@ function AsqlRestClientAutoLoader(builder) {
     }
 
     function processSingleItem(data, relation) {
-        var obj = getRelationConfigurationByName(nameOfRoot);
+        var relationInstance = getRelationConfigurationByName(nameOfRoot);
+        if (relationInstance == null)
+            return;
     }
 
     function log(message)
@@ -87,6 +112,7 @@ function AsqlRestClientAutoLoader(builder) {
             if (arrayItem[name] != undefined)
                 return arrayItem[name];
         }
+        return null;
     }
       return {
         load : load,

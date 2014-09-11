@@ -23,7 +23,10 @@
 
     var autoLoader = new AsqlRestClientAutoLoader(builder);
     autoLoader.setLogger(addResult);
-    var completeEntity = autoLoader.load(1,'blog');
+    var completeEntity = autoLoader.load(1,'blog', function(loadedObj)
+        {
+          addResult("Celý objekt načten.");
+        });
 
 
     div.innerHTML = div.innerHTML + "<br/>test GET";

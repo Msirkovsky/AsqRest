@@ -8,7 +8,7 @@ function main()
 main();
 
 //hlavní funkce
-function AsqlRestClient(url) {
+function SimpleRestClient(url) {
 
     var _url = url;
     

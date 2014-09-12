@@ -2,14 +2,16 @@
 
     var builder = {
         data: [
-        {author : { name : 'author', url: 'api/author' }},
+        {authorDetail : { name : 'authorDetail', url: 'api/authorDetail' }},
+        {author : { name : 'author', url: 'api/author', relations : [{ name: "authorDetail", type:"authorDetail", key:"idAuthor", relation: 'c'}] }},
         {comment : { name : 'comment', url: 'api/comment', relations : [{ name : "author", type:"author", key:"idComment", relation: 'a'}] }},
         {blog : { name : 'blog', url: 'api/blog', relations : [{ name: "comments", type:"comment", key:"idBlog", relation: 'c'}]}}
         ]
     };
 
     var div = document.getElementById("viewDiv");
-    div.innerHTML = "test";
+    addResultBold("RestClientAutoLoader<br/>");
+    
     
     function addResultBold(text)
     {
@@ -21,88 +23,28 @@
        div.innerHTML = div.innerHTML + "<br/>" + text;
     }
 
-    var autoLoader = new AsqlRestClientAutoLoader(builder);
+    var autoLoader = new RestClientAutoLoader(builder);
     autoLoader.setLogger(addResult);
-    var completeEntity = autoLoader.load(1,'blog', function(loadedObj)
-        {
-          addResult("Celý objekt načten.");
+    var completeEntity = autoLoader.load(1,'blog', function(loadedObj) {
+          addResult("Object complete loaded.");
         });
 
 
-    div.innerHTML = div.innerHTML + "<br/>test GET";
-
-    var client = new AsqlRestClient('api/blog');
-    var promise = client.post({"data":"test"});
-    promise.done(function (data) {
-        addResultBold("AsqlRestClient - test GET  - ok");
-    }).fail(function () {
-        addResultBold("AsqlRestClient - test GET  - error");
-    });
+    //div.innerHTML = div.innerHTML + "<br/>test GET";
+//    var client = new SimpleRestClient('api/blog');
+//    var promise = client.post({"data":"test"});
+//    promise.done(function (data) {
+//        addResultBold("SimpleRestClient - test GET  - ok");
+//    }).fail(function () {
+//        addResultBold("SimpleRestClient - test GET  - error");
+    //});
 
     promise = client.get({"id": "1"});
     promise.done(function (data) {
-        addResultBold("AsqlRestClient - test GET  - ok");
+        addResultBold("SimpleRestClient - test GET  - ok");
     }).fail(function () {
-        addResultBold("AsqlRestClient - test GET  - error");
+        addResultBold("SimpleRestClient - test GET  - error");
     });
 
 }
 
-function oldRequests()
-{
-
-     $.ajax("api/blog")
-        .done(function(data) {
-            addResult("test GET - ok");
-        })
-        .fail(function() {
-            addResult("test GET - error");
-        });
-    
-    $.ajax(
-        {
-            type: "POST",
-            url: "api/blog",
-            contentType: "application/json",
-            data: { "data": "mydata" }
-        })
-        .done(function(data) {
-            addResult("test POST ok");
-        })
-        .fail(function() {
-            addResult("test POST error");
-        });
-
-
-
-    $.ajax(
-        {
-            type: "PUT",
-            url: "api/blog",
-            contentType: "application/json",
-            data: { "data": "mydata" }
-        })
-        .done(function(data) {
-            addResult("test PUT - ok");
-        })
-        .fail(function() {
-            addResult("test PUT - error");
-        });
-
-    
-
-    $.ajax(
-        {
-            type: "DELETE",
-            url: "api/blog",
-            contentType: "application/json",
-            data: { "data": "mydata" }
-        })
-        .done(function(data) {            
-            addResult("test DELETE - ok");
-        })
-        .fail(function() {
-            addResult("test DELETE - error");
-        });
-
-}

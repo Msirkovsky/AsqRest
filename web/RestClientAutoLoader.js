@@ -1,9 +1,12 @@
-function AsqlRestClientAutoLoader(builder) {
+function RestClientAutoLoader(builder) {
 
     var _builder = builder;
     var _logListener= null;
     var _resultObject = null;
     var _callbackAfterAllLoaded;
+    var _numberOfActiveAsyncRequest = 0;
+    var _numberOfAllAsyncRequest = 0;
+
     function setLogger(logListener) 
     {
         _logListener = logListener;
@@ -13,10 +16,10 @@ function AsqlRestClientAutoLoader(builder) {
     {
         _callbackAfterAllLoaded = callbackAfterAllLoaded;
         var root = getRelationConfigurationByName(nameOfRoot);
-        var rootClient = new AsqlRestClient(root.url);
+        var rootClient = new SimpleRestClient(root.url);
         
         log("I am getting root: " + nameOfRoot);
-        pocetAsyncRequestCelkovychStat++;
+        _numberOfAllAsyncRequest++;
         var promiseMain = rootClient.get(id).then(function(data)
         {
             log("I am done getting root: " + nameOfRoot);
@@ -32,40 +35,41 @@ function AsqlRestClientAutoLoader(builder) {
         return _resultObject;
     }
 
-    var pocetAktivnichAsyncRequest = 0;
-    var pocetAsyncRequestCelkovychStat = 0;
 
     function processRelations(relation, id, promiseParent)
     {
         var association = getRelationConfigurationByName(relation.type);
-        var associationClient = new AsqlRestClient(association.url);
+        var associationClient = new SimpleRestClient(association.url);
 
         log("I am getting association: " + relation.name + ". Foreignt key: " + relation.key);
 
         $.when(promiseParent).then(function(data)
         {
-            pocetAktivnichAsyncRequest++;
-            pocetAsyncRequestCelkovychStat++;
+            _numberOfActiveAsyncRequest++;
+            _numberOfAllAsyncRequest++;
 
             associationClient.getByForeignKey(relation.key, id).then(function(data)
             {
                 log("I am done getting relation: " + relation.name);
-                pocetAktivnichAsyncRequest--;
+                _numberOfActiveAsyncRequest--;
 
-                _resultObject[relation.name] = data;
-                if (Array.isArray(data))
+                if (relation.relation == "c")
                 {
-                    processArray(data, relation.type);
-                }
-                else
-                {
-                    processSingleItem(data, relation);
+                    _resultObject[relation.name] = data;
+                    if (Array.isArray(data))
+                    {
+                        processArray(data, relation.type);
+                    }
+                    else
+                    {
+                        processSingleItem(data, relation.type);
+                    }
                 }
 
-                if (pocetAktivnichAsyncRequest == 0)
+                if (_numberOfActiveAsyncRequest == 0)
                 {
-                    log("Počet celkových requestů " + pocetAsyncRequestCelkovychStat);
-                    log("All completed");
+                    log("Number of complete requests: " + _numberOfAllAsyncRequest + ".");
+                    log("All completed.");
                     _callbackAfterAllLoaded(_resultObject);
                 }
             }
@@ -93,10 +97,21 @@ function AsqlRestClientAutoLoader(builder) {
         }
     }
 
-    function processSingleItem(data, relation) {
-        var relationInstance = getRelationConfigurationByName(nameOfRoot);
+    function processSingleItem(data, type) {
+
+        var relationInstance = getRelationConfigurationByName(type);
+
         if (relationInstance == null)
+        {
+            throw "Not mapped: " + type +". Cant process!";
+        }
+        var relations = relationInstance.relations;
+        if (relations == undefined)
             return;
+        
+         for (var j = 0; j < relations.length; j++) {        
+            processRelations(relations[j], data.id, null);
+        }            
     }
 
     function log(message)

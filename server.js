@@ -20,10 +20,7 @@ function filterArray (arr, criteria) {
 
 	function getMockAuthor()
 	{
-    return [
-	    { id: "1", name: "Tom", idComment:"1" },
-	    { id: "2", name: "Jeremy", idComment:"1" }
-	    ];
+    return { id: "1", name: "Tom", idComment:"1" }	    
 	}
 
 	function getMockBlogPosts()
@@ -69,7 +66,7 @@ function filterArray (arr, criteria) {
 		console.log(req.query);
 
 		var blogs = getMockAuthor();
-		blogs = filterArray(blogs, req.query)
+		//blogs = filterArray(blogs, req.query)
 	    res.send(blogs);
 	});	
 

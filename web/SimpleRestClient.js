@@ -27,5 +27,4 @@ function SimpleRestClient(url) {
         get : get,
         getByForeignKey:getByForeignKey
     };
-
 }

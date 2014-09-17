@@ -11,8 +11,7 @@
 
     var div = document.getElementById("viewDiv");
     addResultBold("RestClientAutoLoader<br/>");
-    
-    
+        
     function addResultBold(text)
     {
        div.innerHTML = div.innerHTML + "<br/><b>" + text + '</b>';
@@ -28,23 +27,4 @@
     var completeEntity = autoLoader.load(1,'blog', function(loadedObj) {
           addResult("Object complete loaded.");
         });
-
-
-    //div.innerHTML = div.innerHTML + "<br/>test GET";
-//    var client = new SimpleRestClient('api/blog');
-//    var promise = client.post({"data":"test"});
-//    promise.done(function (data) {
-//        addResultBold("SimpleRestClient - test GET  - ok");
-//    }).fail(function () {
-//        addResultBold("SimpleRestClient - test GET  - error");
-    //});
-
-    promise = client.get({"id": "1"});
-    promise.done(function (data) {
-        addResultBold("SimpleRestClient - test GET  - ok");
-    }).fail(function () {
-        addResultBold("SimpleRestClient - test GET  - error");
-    });
-
 }
-
